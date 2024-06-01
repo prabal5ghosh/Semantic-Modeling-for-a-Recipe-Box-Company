@@ -1,0 +1,229 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://prabal.org/foodOntology#> .
+
+
+
+# Recipe 1: Spaghetti Carbonara
+:recipe1 a :Recipe ;
+    :name "Spaghetti Carbonara" ;
+    :cookingTime "20"^^xsd:integer ;
+    :hasNutritionalInfo "High in carbohydrate" ;
+    :cuisineType :ItalianCuisine ;
+    :hasIngredient :ingredient1 ;
+    :calories 500 ;
+    :price 10.99 ;
+    :healthConcern "High in calories" .
+
+# Review 1 for Recipe 1
+:review1 rdf:type :Review ;
+    :reviewedBy :customer3 ;
+    :ratedRecipe :recipe1 ;
+    :customerRating 5 ;
+    :customerReview "Tasty Spaghetti Carbonara!";
+    :hasComment "I have tested this dish several times and mostly its my 1st choice for breakfast." .
+
+
+# Recipe 2: Grilled Chicken Salad
+:recipe2 rdf:type :Recipe ;
+    :name "Grilled Chicken Salad" ;
+    # :cookingTime "PT120M"^^xsd:duration ;
+    :cookingTime "120"^^xsd:integer ;
+    :hasNutritionalInfo "High in protein" ;
+    :cuisineType :IndianCuisine ;
+    :hasIngredient :ingredient4 ;
+    :calories 250 ;
+    :price 9.99 ;
+    :healthConcern "Low-calorie, high-protein" .
+
+# Review 2 for Recipe 2
+:review2 rdf:type :Review ;
+    :reviewedBy :customer2 ;
+    :ratedRecipe :recipe2 ;
+    :customerRating 5 ;
+    :customerReview "Great salad, loved the grilled chicken!" .
+
+# Recipe 3: Tomato Basil Pasta
+:recipe3 rdf:type :Recipe ;
+    :name "Tomato Basil Pasta" ;
+    :cookingTime "30"^^xsd:integer ;
+    :hasNutritionalInfo "low in protein" ;
+    :cuisineType :ItalianCuisine ;
+    :hasIngredient :ingredient1, :ingredient3 ;
+    :calories 350 ;
+    :price 12.99 ;
+    :healthConcern "Vegetarian, gluten-free option available" .
+
+# Review 3 for Recipe 3
+:review3 rdf:type :Review ;
+    :reviewedBy :customer1 ;
+    :ratedRecipe :recipe3 ;
+    :customerRating 5 ;
+    :customerReview "Delicious pasta, loved the fresh basil!" .
+
+# Ingredient 1: Spaghetti
+:ingredient1 a :Ingredient ;
+    :name "Spaghetti" ;
+    :hasCategory "Pasta" ;
+    :hasHealthBenefits "Good source of carbohydrates" .
+
+# Ingredient 2: Eggs (Not used in any recipe)
+:ingredient2 a :Ingredient ;
+    :name "Eggs" ;
+    :hasCategory "Protein" ;
+    :hasHealthBenefits "Good source of protein" .
+
+# Ingredient 3: Tomato
+:ingredient3 rdf:type :Ingredient ;
+    :name "Tomato" ;
+    :hasCategory "Vegetable" ;
+    :hasHealthBenefits "Rich in vitamins and antioxidants" .
+
+# Ingredient 4: Chicken Breast
+:ingredient4 rdf:type :Ingredient ;
+    :name "Chicken Breast" ;
+    :hasCategory "Meat" ;
+    :hasHealthBenefits "High in protein, low in fat" .
+
+# Menu 1: Spaghetti Carbonara + Grilled Chicken Salad
+:menu1 rdf:type :Menu ;
+    :includesRecipe :recipe1, :recipe2;
+    :name  "Spaghetti Carbonara + Grilled Chicken Salad" .
+
+# Menu 2: Grilled Chicken Salad + Tomato Basil Pasta
+:menu2 rdf:type :Menu ;
+    :includesRecipe :recipe2, :recipe3 ;
+    :name "Grilled Chicken Salad + Tomato Basil Pasta" .
+
+# Menu 3: Spaghetti Carbonara + Tomato Basil Pasta
+:menu3 rdf:type :Menu ;
+    :includesRecipe :recipe1, :recipe3;
+    :name "Spaghetti Carbonara + Tomato Basil Pasta" .
+
+# Menu 4: All Recipes Together
+:menu4 rdf:type :Menu ;
+    :includesRecipe :recipe1, :recipe2, :recipe3;
+    :name "All Recipes together" .
+
+# Customer 1: Prabal Ghosh
+:customer1 a :Customer ;
+    :name "Prabal Ghosh" ;
+    :hasAddress "Kolkata 700102 India" ;
+    :hasSubscription :HighSubscription ;
+    :gender :Male .
+
+# Customer 2: Rohit PS
+:customer2 rdf:type :Customer ;
+    :name "Rohit PS" ;
+    :hasAddress "Kerala 600626 India" ;
+    :hasSubscription :MidSubscription;
+    :gender :Male .
+
+# Customer 3: KL Rahul
+:customer3 rdf:type :Customer ;
+    :name "KL Rahul" ;
+    :hasAddress "Hyderabad 900004 India";
+    :hasSubscription :MidSubscription ;
+    :gender :Male .
+
+# Customer 4: Payel Ghosh
+:customer4 rdf:type :Customer ;
+    :name "Payel Ghosh" ;
+    :hasAddress "Delhi 100002 India" ; 
+    :hasSubscription :LowSubscription ;
+    :gender :Female .
+
+# Customer 5: Hardik Pandya
+:customer5 rdf:type :Customer ;
+    :name "Hardik Pandya" ;
+    :hasAddress "Mumbai 200004 India" ;
+    :hasSubscription :LowSubscription;
+    :gender :Female .
+    
+
+# Customer 6: Sachin Tendulkar
+:customer6 rdf:type :Customer ;
+    :name "Sachin Tendulkar" ;
+    :hasAddress "Maharastra 200005 India";
+    :hasSubscription :LowSubscription ;
+    :gender :Male .
+
+# Order 1: Menu 1
+:order1 a :Order ;
+    :orderContains :menu1;
+    :orderedByCustomer :customer1 ;
+    :deliveryPersonDelivers :deliveryPerson2 ;
+    :hasDeliveryDate "2024-04-02"^^xsd:date ;
+    :deliveryFrequency "Weekly" ;
+    :deliveryDay "Monday" .
+
+# Order 2: Menu 2
+:order2 a :Order ;
+    :orderContains :menu2;
+    :orderedByCustomer :customer2 ;
+    :deliveryPersonDelivers :deliveryPerson2 ;
+    :hasDeliveryDate "2023-04-02"^^xsd:date ;
+    :deliveryFrequency "Weekly" ;
+    :deliveryDay "Friday" .
+
+# Order 3: Menu 3
+:order3 a :Order ;
+    :orderContains :menu3;
+    :orderedByCustomer :customer3 ;
+    :deliveryPersonDelivers :deliveryPerson2 ;
+    :hasDeliveryDate "2022-04-02"^^xsd:date ;
+    :deliveryFrequency "Monthly" ;
+    :deliveryDay "Sunday" .
+
+# Order 4: Menu 4
+:order4 a :Order ;
+    :orderContains :menu4;
+    :orderedByCustomer :customer4 ;
+    :deliveryPersonDelivers :deliveryPerson1 ;
+    :hasDeliveryDate "2024-04-03"^^xsd:date ;
+    :deliveryFrequency "Weekly" ;
+    :deliveryDay "Monday" .
+
+# Order 5: Grilled Chicken Salad
+:order5 a :Order ;
+    :orderContains :ingredient4,:recipe2;
+    :orderedByCustomer :customer5 ;
+    :deliveryPersonDelivers :deliveryPerson1 ;
+    :hasDeliveryDate "2024-04-02"^^xsd:date ;
+    :deliveryFrequency "Weekly" ;
+    :deliveryDay "Friday" .
+
+# Order 6: Spaghetti Carbonara + Grilled Chicken Salad
+:order6 a :Order ;
+    :orderContains :ingredient1,:recipe2;
+    :orderedByCustomer :customer6 ;
+    :deliveryPersonDelivers :deliveryPerson3 ;
+    :hasDeliveryDate "2024-04-02"^^xsd:date ;
+    :deliveryFrequency "Monthly" ;
+    :deliveryDay "Saturday" .
+
+# Order 7: Grilled Chicken Salad
+:order7 a :Order ;
+    :orderContains :recipe2;
+    :orderedByCustomer :customer1 ;
+    :deliveryPersonDelivers :deliveryPerson1 ;
+    :hasDeliveryDate "2024-04-02"^^xsd:date ;
+    :deliveryFrequency "Monthly" ;
+    :deliveryDay "Saturday" .
+
+# Delivery Person 1: John Doe
+:deliveryPerson1 rdf:type :DeliveryPersonnel ;
+    :name "John Doe" ;
+    :hasContactInfo "+91 9732620116" .
+
+# Delivery Person 2: Aswini
+:deliveryPerson2 rdf:type :DeliveryPersonnel ;
+    :name "Aswini" ;
+    :hasContactInfo "+91 9732620117" .
+
+# Delivery Person 3: Rahul
+:deliveryPerson3 rdf:type :DeliveryPersonnel ;
+    :name "Rahul" ;
+    :hasContactInfo "+91 9732620118" .

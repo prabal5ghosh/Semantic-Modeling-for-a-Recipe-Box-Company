@@ -1,0 +1,248 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix : <http://prabal.org/foodOntology#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Define shapes
+
+# Recipe Shape
+:RecipeShape
+    a sh:NodeShape ;
+    sh:targetClass :Recipe ;
+    sh:property [
+        sh:path :hasIngredient ;
+        sh:class :Ingredient ;
+        sh:minCount 1 ;
+        sh:message "Recipe must have at least one ingredient."
+    ] ;
+    sh:property [
+        sh:path :cookingTime ;
+        sh:datatype xsd:integer ;
+        sh:message "Cooking time must be of type xsd:integer."
+    ] ;
+    sh:property [
+        sh:path :cuisineType ;
+        sh:class :Cuisine ;
+        sh:minCount 1 ;
+        sh:message "Cuisine type must be of type Cuisine."
+    ] ;
+    sh:property [
+        sh:path :calories ;
+        sh:datatype xsd:integer ;
+        sh:message "Calories must be of type xsd:integer."
+    ] ;
+    sh:property [
+        sh:path :price ;
+        sh:datatype xsd:decimal ;
+        sh:message "Price must be of type xsd:decimal."
+    ] ;
+    sh:property [
+        sh:path :healthConcern ;
+        sh:datatype xsd:string ;
+        sh:message "Health concern must be of type xsd:string."
+    ] .
+
+# Ingredient Shape
+
+:IngredientShape
+    a sh:NodeShape ;
+    sh:targetClass :Ingredient ;
+    sh:property [
+        sh:path :name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Ingredient must have  one name."
+
+    ] ;
+    sh:property [
+        sh:path :hasCategory ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Category must be of type xsd:string."
+
+    ] ;
+    sh:property [
+        sh:path :hasHealthBenefits ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Health benefits must be of type xsd:string."
+
+    ] .
+
+# Gender
+
+:gender a sh:PropertyShape ;
+    sh:path :gender ;
+    sh:minCount 1 ;
+    sh:maxCount 1 ;
+    sh:message "Customer must have one gender." ;
+    sh:severity sh:Violation ;
+    sh:nodeKind sh:IRI ;
+    sh:targetClass :Customer ;
+    sh:targetSubjectsOf :gender .
+
+# Customer Shape
+
+:CustomerShape
+    a sh:NodeShape ;
+    sh:targetClass :Customer ;
+    sh:property [
+        sh:path :name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Customer must have one name."
+    ] ;
+    sh:property [
+        sh:path :hasAddress ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Address must be of type xsd:string."
+    ] ;
+    sh:property [
+        sh:path :hasSubscription ;
+        sh:class [
+            a owl:Class ;
+            owl:unionOf (:HighSubscription :LowSubscription :MidSubscription)
+        ] ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Customer must have one subscription."
+    ] ;
+    sh:property [
+        sh:path :gender ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Customer must have one gender."
+    ].
+
+# Order Shape
+:OrderShape
+    a sh:NodeShape ;
+    sh:targetClass :Order ;
+    sh:property [
+        sh:path :orderContains ;
+        sh:minCount 1 ;
+        sh:maxCount 10 ;
+
+        sh:message "Order must contain at least one menu, ingredient, or recipe and max 10."
+    ] ;
+    sh:property [
+        sh:path :orderedByCustomer ;
+        sh:class :Customer ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+    ] ;
+    sh:property [
+        sh:path :hasDeliveryDate ;
+        sh:datatype xsd:date ;
+        sh:minCount 1 ;
+        sh:message "Delivery date must be of type xsd:date."
+    ] ;
+    sh:property [
+        sh:path :deliveryFrequency ;
+        sh:datatype xsd:string ;
+        sh:message "Delivery frequency must be of type xsd:string."
+    ] ;
+    sh:property [
+        sh:path :deliveryDay ;
+        sh:datatype xsd:string ;
+
+        sh:message "Delivery day must be of type xsd:string."
+    ] ;
+    sh:property [
+        sh:path :deliveryPersonDelivers ;
+        sh:class :DeliveryPersonnel ;
+        sh:minCount 1 ;
+    ] .
+
+# Delivery Personnel Shape
+:DeliveryPersonnelShape
+    a sh:NodeShape ;
+    sh:targetClass :DeliveryPersonnel ;
+    sh:property [
+        sh:path :hasContactInfo ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Contact info must be of type xsd:string."
+    ] ;
+    sh:property [
+        sh:path :name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+
+    ] .
+
+# Subscription Shape
+:SubscriptionShape
+    a sh:NodeShape ;
+    sh:targetClass :Subscription ;
+    sh:property [
+        sh:path :subscriptionDuration ;
+        sh:in (1 6 12) ;
+        sh:message "Subscription duration must be 1, 6, or 12 months."
+    ] .
+
+# Menu Shape
+:MenuShape
+    a sh:NodeShape ;
+    sh:targetClass :Menu ;
+    sh:property [
+        sh:path :name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path :includesRecipe ;
+        sh:class :Recipe ;
+        sh:minCount 1 ;
+    ] .
+
+
+# Review Shape
+
+:ReviewShape
+    a sh:NodeShape ;
+    sh:targetClass :Review ;
+    sh:property [
+        sh:path :reviewedBy ;
+        sh:class :Customer ;
+        sh:minCount 1 ;
+        sh:message "Review must be authored by exactly one customer."
+    ] ;
+    sh:property [
+        sh:path :customerRating ;
+        sh:datatype xsd:integer ;
+        sh:in (1 2 3 4 5) ;
+        sh:message "Rating must be an integer between 1 and 5."
+    ] ;
+    sh:property [
+        sh:path :customerReview ;
+        sh:datatype xsd:string ;
+        sh:message "Review must have a string value."
+    ] ;
+    sh:property [
+        sh:path :hasComment ;
+        sh:datatype xsd:string ;
+        sh:message "Comment must be of type xsd:string."
+    ] .
+
+# DeliveryPersonnel Shape
+
+:DeliveryPersonnelShape
+    a sh:NodeShape ;
+    sh:targetClass :DeliveryPersonnel ;
+    sh:property [
+        sh:path :name ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Delivery personnel must have a name."
+    ] ;
+    sh:property [
+        sh:path :hasContactInfo ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:message "Delivery personnel must have contact information."
+    ] .

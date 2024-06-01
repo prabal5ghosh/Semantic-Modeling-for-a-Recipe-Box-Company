@@ -1,0 +1,441 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://prabal.org/foodOntology#> .
+
+# Classes
+:Recipe a owl:Class ;
+    rdfs:label "Recipe" ;
+    rdfs:comment "A recipe for a dish." ;
+    owl:equivalentClass [
+    owl:intersectionOf (
+      [ a owl:Restriction ;
+        owl:onProperty :cuisineType ;
+        owl:minCardinality 1 ]
+
+      [ a owl:Restriction ;
+        owl:onProperty :hasIngredient ;
+        owl:minCardinality 1 ]
+
+    ) ].
+
+
+:Ingredient a owl:Class;
+    rdfs:label "Ingredient" ;
+    rdfs:comment "An ingredient used in recipes." .
+
+:Menu a owl:Class ;
+    rdfs:label "Menu" ;
+    rdfs:comment "A collection of recipes offered by a restaurant or service." ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty :includesRecipe ;
+        owl:minCardinality 1 
+     ].
+
+
+    
+
+:Person a owl:Class ;
+    rdfs:label "Person" ;
+    rdfs:comment "A person." .
+
+
+:Female a owl:Class ;
+    owl:disjointWith :Male;
+    rdfs:label "female"@en, "femelle"@fr ;
+    rdfs:comment "a Female Person"@en;
+    rdfs:subClassOf :Person .
+
+:Male a owl:Class ;
+    owl:disjointWith :Female;
+
+    rdfs:label "male"@en, "mâle"@fr ;
+    rdfs:comment "an Male Person"@en;
+    rdfs:subClassOf :Person .
+
+:Man a owl:Class ;
+    owl:disjointWith :Woman;
+
+    rdfs:label "man"@en, "homme"@fr ;
+    rdfs:comment "an adult male person"@en,
+                 "mâle adulte de l'espèce humaine."@fr ;
+    rdfs:subClassOf :Male, :Person .
+
+
+:Woman a owl:Class ;
+    rdfs:label "woman"@en, "femme"@fr ;
+    rdfs:comment "an adult female person"@en,
+                 "femelle adulte de l'espèce humaine."@fr ;
+    rdfs:subClassOf :Female, :Person .
+
+:Man a owl:Class ;
+owl:intersectionOf ( :Person :Male ) .
+
+
+
+:Woman a owl:Class ;
+owl:intersectionOf ( :Person :Female ) .
+
+
+
+:gender a owl:ObjectProperty ;
+    rdfs:label "gender" ;
+    rdfs:domain :Person ;
+    rdfs:range [
+        a owl:Class ;
+        owl:unionOf (:Male :Female)
+    ] ;
+    rdfs:comment "Specifies the gender of a person." .
+
+
+
+
+:Customer a owl:Class ;
+    rdfs:subClassOf :Person;
+    rdfs:label "Customer" ;
+    rdfs:comment "A customer who orders food." .
+
+:Order a owl:Class ;
+    rdfs:label "Order" ;
+    rdfs:comment "An order placed by a customer." ;
+    owl:equivalentClass [
+        owl:intersectionOf (
+        [ a owl:Restriction ;
+            owl:onProperty :orderContains ;
+            owl:minCardinality 1 ]
+
+        [ a owl:Restriction ;
+            owl:onProperty :orderContains ;
+            owl:maxCardinality 10 ]
+
+                 [a owl:Restriction; 
+        owl:onProperty :orderContains; 
+        owl:allValuesFrom [
+            owl:unionOf (:Menu :Ingredients :Recipe)
+        ]
+                 ]
+
+        ) ].
+
+
+    
+
+:Review a owl:Class ;
+    rdfs:label "Review" ;
+    rdfs:comment "A review given by a customer for a recipe." .
+
+:DeliveryPersonnel a owl:Class ;
+    rdfs:subClassOf :Person;
+    rdfs:label "DeliveryPersonnel" ;
+    rdfs:comment "Personnel responsible for delivering orders." .
+
+
+
+:Subscription a owl:Class ;
+    rdfs:label "Subscription" ;
+    rdfs:comment "A subscription for regular food delivery service." .
+
+
+:subscriptionDuration a owl:DatatypeProperty ;
+    rdfs:label "subscriptionDuration" ;
+    rdfs:domain :Subscription ;
+    rdfs:range [
+        a rdfs:Datatype ;
+        owl:oneOf (
+            [ rdf:type xsd:integer ; rdf:value "1"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "6"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "12"^^xsd:integer ]
+        )
+    ] ;
+    rdfs:comment "Specifies the duration of the subscription, allowed values are 1, 6, or 12 months." .
+
+:HighSubscription a owl:Class;
+    rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :subscriptionDuration ;
+    owl:hasValue "12"^^xsd:integer
+].
+
+:LowSubscription a owl:Class;
+    rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :subscriptionDuration ;
+    owl:hasValue "1"^^xsd:integer
+].
+
+:MidSubscription a owl:Class;
+    rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty :subscriptionDuration ;
+    owl:hasValue "6"^^xsd:integer
+].
+
+
+
+
+
+:Cuisine a owl:Class ;
+    rdfs:label "Cuisine" ;
+    rdfs:comment "A type of cuisine, e.g., Italian, Chinese, etc." .
+
+# Define Subclasses of Cuisine
+:ChineseCuisine a owl:Class ;
+    rdfs:label "Chinese Cuisine" ;
+    rdfs:subClassOf :Cuisine ;
+    rdfs:comment "Chinese cuisine." .
+
+:IndianCuisine a owl:Class ;
+    rdfs:label "Indian Cuisine" ;
+    rdfs:subClassOf :Cuisine ;
+    rdfs:comment "Indian cuisine." .
+
+:ThaiCuisine a owl:Class ;
+    rdfs:label "Thai Cuisine" ;
+    rdfs:subClassOf :Cuisine ;
+    rdfs:comment "Thai cuisine." .
+
+:ItalianCuisine a owl:Class ;
+    rdfs:label "Italian Cuisine" ;
+    rdfs:subClassOf :Cuisine ;
+    rdfs:comment "Italian cuisine." .
+
+
+
+
+# Object Properties
+:includesRecipe a owl:ObjectProperty ;
+    rdfs:label "includesRecipe" ;
+    rdfs:domain :Menu ;
+    rdfs:range :Recipe ;
+    rdfs:comment "Specifies that a menu includes a recipe." .
+
+:hasIngredient a owl:ObjectProperty ;
+    rdfs:label "hasIngredient" ;
+    rdfs:domain :Recipe ;
+    rdfs:range :Ingredient ;
+    rdfs:comment "Specifies the ingredients used in a recipe." .
+
+:belongsToMenu a owl:ObjectProperty ;
+    rdfs:label "belongsToMenu" ;
+    rdfs:domain :Recipe ;
+    rdfs:range :Menu ;
+    rdfs:comment "Specifies the menu to which a recipe belongs." .
+
+
+:orderContains a owl:ObjectProperty;
+    rdfs:label "orderContains";
+    rdfs:domain :Order;
+    rdfs:range [
+        a owl:Class;
+        owl:unionOf (:Menu :Ingredient :Recipe)
+    ];
+    rdfs:comment "orderContains Menu, Ingredient, Recipe" .
+
+
+
+:orderedByCustomer a owl:ObjectProperty ;
+    rdfs:label "orderedByCustomer" ;
+    rdfs:domain :Order ;
+    rdfs:range :Customer ;
+    rdfs:comment "Specifies the customer who placed an order." .
+
+
+
+:hasSubscription a owl:ObjectProperty ;
+    rdfs:label "hasSubscription" ;
+    rdfs:domain :Customer ;
+    rdfs:range [
+        a owl:Class ;
+        owl:unionOf (:HighSubscription :LowSubscription :MidSubscription)
+    ] ;
+    owl:cardinality 1 ;
+    rdfs:comment "Specifies the subscription of a customer." .
+
+
+
+:deliveryPersonDelivers a owl:ObjectProperty ;
+    rdfs:label "deliveryPersonDelivers" ;
+    rdfs:domain :Order ;
+    rdfs:range :DeliveryPersonnel ;
+    rdfs:comment "Specifies the delivery person responsible for delivering an order." .
+
+
+
+# Inverse Properties
+:recipeIncludedInMenu owl:inverseOf :includesRecipe ;
+    rdfs:label "recipeIncludedInMenu" ;
+    rdfs:comment "Inverse of includesRecipe." .
+
+:ingredientUsedInRecipe owl:inverseOf :hasIngredient ;
+    rdfs:label "ingredientUsedInRecipe" ;
+    rdfs:comment "Inverse of hasIngredient." .
+
+:recipeBelongsToMenu owl:inverseOf :belongsToMenu ;
+    rdfs:label "recipeBelongsToMenu" ;
+    rdfs:comment "Inverse of belongsToMenu." .
+
+:customerPlacesOrder owl:inverseOf :orderedByCustomer ;
+    rdfs:label "customerPlacesOrder" ;
+    rdfs:comment "Inverse of orderedByCustomer." .
+
+
+
+# Equivalent Properties
+:hasIngredient owl:equivalentProperty :containsIngredient ;
+    rdfs:label "hasIngredient" ;
+    rdfs:comment "Equivalent to containsIngredient." .
+
+:belongsToMenu owl:equivalentProperty :menuContainsRecipe ;
+    rdfs:label "belongsToMenu" ;
+    rdfs:comment "Equivalent to menuContainsRecipe." .
+
+
+
+
+:name a owl:DatatypeProperty ;
+    rdfs:label "name" ;
+    rdfs:domain [
+        a owl:Class ;
+        owl:unionOf (:Person :Recipe :Ingredient :Menu :Cuisine)
+    ] ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the name of an entity." .
+
+
+:cookingTime a owl:DatatypeProperty ;
+    rdfs:label "cookingTime" ;
+    rdfs:domain :Recipe ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Specifies the cooking time of a recipe" .
+
+
+:hasNutritionalInfo a owl:DatatypeProperty ;
+    rdfs:label "hasNutritionalInfo" ;
+    rdfs:domain :Recipe ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the nutritional information of a recipe." .
+
+:hasCategory a owl:DatatypeProperty ;
+    rdfs:label "hasCategory" ;
+    rdfs:domain :Ingredient ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the category of an ingredient." .
+
+:hasHealthBenefits a owl:DatatypeProperty ;
+    rdfs:label "hasHealthBenefits" ;
+    rdfs:domain :Ingredient ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the health benefits of an ingredient." .
+
+
+
+:hasAddress a owl:DatatypeProperty ;
+    rdfs:label "hasAddress" ;
+    rdfs:domain :Customer ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the address of a customer." ;
+    owl:cardinality 1 .
+
+:hasDeliveryDate a owl:DatatypeProperty ;
+    rdfs:label "hasDeliveryDate" ;
+    rdfs:domain :Order ;
+    rdfs:range xsd:date ;
+    rdfs:comment "Specifies the delivery date of an order.";
+    owl:minCardinality 1 .
+
+
+:hasContactInfo a owl:DatatypeProperty ;
+    rdfs:label "hasContactInfo" ;
+    rdfs:domain :DeliveryPersonnel ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the contact information of a delivery personnel." ;
+    owl:minCardinality 1 .
+
+
+:deliveryFrequency a owl:DatatypeProperty ;
+    rdfs:label "deliveryFrequency" ;
+    rdfs:domain :Order ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the delivery frequency of an order." .
+
+:deliveryDay a owl:DatatypeProperty ;
+    rdfs:label "deliveryDay" ;
+    rdfs:domain :Order ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the delivery day of an order." .
+
+# Additional Properties
+
+
+:cuisineType a owl:DatatypeProperty ;
+    rdfs:label "cuisineType" ;
+    rdfs:domain :Recipe ;
+    rdfs:range :Cuisine ;
+    rdfs:comment "Specifies the type of cuisine of a recipe." .
+
+:calories a owl:DatatypeProperty ;
+    rdfs:label "calories" ;
+    rdfs:domain :Recipe ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Specifies the calories of a recipe." .
+
+:price a owl:DatatypeProperty ;
+    rdfs:label "price" ;
+    rdfs:domain :Recipe ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Specifies the price of a recipe." .
+
+:healthConcern a owl:DatatypeProperty ;
+    rdfs:label "healthConcern" ;
+    rdfs:domain :Recipe ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the health concerns associated with a recipe." .
+
+:customerRating a owl:DatatypeProperty ;
+    rdfs:label "customerRating" ;
+    rdfs:domain :Review ;
+    rdfs:range [
+        a rdfs:Datatype ;
+        owl:oneOf (
+            [ rdf:type xsd:integer ; rdf:value "1"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "2"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "3"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "4"^^xsd:integer ]
+            [ rdf:type xsd:integer ; rdf:value "5"^^xsd:integer ]
+        )
+    ] ;
+    rdfs:comment "Specifies the rating given by a customer in a review." .
+
+
+
+:customerReview a owl:DatatypeProperty ;
+    rdfs:label "customerReview" ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the review provided by a customer." .
+
+
+:reviewedBy a owl:ObjectProperty ;
+    rdfs:label "reviewedBy" ;
+    rdfs:domain :Review ;
+    rdfs:range :Customer ;
+    rdfs:comment "Specifies the customer who wrote a review." .
+
+
+:ratedRecipe a owl:ObjectProperty ;
+    rdfs:label "ratedRecipe" ;
+    rdfs:domain :Review ;
+    rdfs:range :Recipe ;
+    rdfs:comment "Specifies the recipe that is being rated in a review." .
+
+:recipeRatedInReview owl:inverseOf :ratedRecipe ;
+    rdfs:label "recipeRatedInReview" ;
+    rdfs:comment "Inverse of ratedRecipe." .
+    
+:hasComment a owl:DatatypeProperty ;
+    rdfs:label "hasComment" ;
+    rdfs:domain :Review ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Specifies the comment of a review." .
